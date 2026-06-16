@@ -126,7 +126,7 @@ class Runner {
         let spriteKey = isMoving ? this.sprites.jump : this.sprites.idle;
         let s = SPRITE_MAP[spriteKey];
 
-        // Ölçekleme faktörü: 32x32 -> 72x72 px ekrana basım
+        // Ölçekleme faktörü: 64x64 -> 72x72 px ekrana basım
         let drawSize = 72;
 
         // P1 Sarı Ok ve Parlama Efekti
@@ -138,7 +138,7 @@ class Runner {
             // Başındaki Sarı Ok Animasyonu (Hafif yukarı aşağı yüzer)
             let arrowY = this.y - 45 + Math.sin(globalFrame * 0.1) * 4;
             let arrow = SPRITE_MAP.arrow;
-            ctx.drawImage(spriteSheet, arrow.x * SPRITE_SIZE, arrow.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, this.x + 20, arrowY, 32, 32);
+            ctx.drawImage(spriteSheet, arrow.x * SPRITE_SIZE, arrow.y * SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, this.x + 20, arrowY, 64, 64);
         }
 
         // Ana Karakter Çizimi
@@ -199,7 +199,7 @@ function drawEnvironment() {
 
     // Sol ve Sağ kısımlara ağaçlar
     ctx.drawImage(spriteSheet, treeTop.x*SPRITE_SIZE, treeTop.y*SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, 40, 30, 96, 96);
-    ctx.drawImage(spriteSheet, treeTrunk.x*SPRITE_SIZE, treeTrunk.y*SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, 72, 120, 32, 64);
+    ctx.drawImage(spriteSheet, treeTrunk.x*SPRITE_SIZE, treeTrunk.y*SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, 72, 120, 64, 64);
     
     ctx.drawImage(spriteSheet, treeTop.x*SPRITE_SIZE, treeTop.y*SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, 740, 20, 110, 110);
 
@@ -231,7 +231,7 @@ function drawEnvironment() {
 
     let checkpoints = [
         { x: 80, label: "0m" },
-        { x: 320, label: "10m" },
+        { x: 640, label: "10m" },
         { x: 560, label: "20m" }
     ];
 
