@@ -270,7 +270,20 @@ function updateLeaderboard() {
 // Ana Oyun Döngüsü
 function loop() {
     globalFrame++;
-    
+
+    // GÖRSELİN YÜKLENİP YÜKLENMEDİĞİNİ KONTROL ET
+    if (spriteSheet.complete) { 
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawEnvironment();
+        runners.forEach(runner => {
+            runner.update();
+            runner.draw();
+        });
+    } else {
+        // Görsel yüklenene kadar bir "Loading" yazısı gösterebilirsin
+        ctx.fillStyle = "white";
+        ctx.fillText("Loading...", 400, 250);
+    }
     // Zaman Mekaniği
     if (gameActive && !raceFinished) {
         timeLeft -= 1 / 60;
