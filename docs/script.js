@@ -181,6 +181,8 @@ const runners = [
 // Statik Sahneleri Arka Plandan Çizme
 function drawEnvironment() {
     // 1. Gökyüzü ve Bulutlar
+    // Sadece tüm görseli canvas'a çizip çizemediğini test et
+    ctx.drawImage(spriteSheet, 0, 0);
     let sky = SPRITE_MAP.sky;
     for(let x=0; x<canvas.width; x+=64) {
         ctx.drawImage(spriteSheet, sky.x*SPRITE_SIZE, sky.y*SPRITE_SIZE, SPRITE_SIZE, SPRITE_SIZE, x, 0, 64, 64);
