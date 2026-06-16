@@ -38,7 +38,7 @@ body {
 .perfect-zone {
     position: absolute;
     left: 40%;
-    width: 20%; /* %40 ile %60 arası mükemmel alan */
+    width: 20%; 
     height: 100%;
     background: #2ecc71;
 }
@@ -60,7 +60,6 @@ body {
     color: #34495e;
 }
 
-/* Geri Bildirim Renkleri */
 .perfect-flash { color: #2ecc71 !important; transform: scale(1.1); transition: 0.1s; }
 .miss-flash { color: #e74c3c !important; }
 
@@ -91,14 +90,13 @@ button:active {
 }
 
 .lane {
-    height: 70px;
+    height: 80px; /* Sprite'lar sığsın diye hafif yükselttik */
     border-bottom: 3px dashed rgba(255,255,255,0.4);
     position: relative;
     display: flex;
     align-items: center;
 }
 
-/* Bizim Karakterin Kulvarını Parlat */
 #player-lane {
     background: rgba(241, 196, 15, 0.15);
 }
@@ -120,19 +118,43 @@ button:active {
     color: #2c3e50;
 }
 
-/* Karakterler */
+/* --- SPRITE ENTEGRASYONU --- */
 .character {
-    font-size: 36px;
     position: absolute;
     left: 80px;
-    bottom: 12px;
-    filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.3));
+    bottom: 5px;
+    width: 48px;       /* Karakter sprite'ının genişliği */
+    height: 64px;      /* Karakter sprite'ının yüksekliği */
+    
+    /* Bu komut piksellerin net kalmasını sağlar (bulanıklaşmayı önler) */
+    image-rendering: pixelated; 
+    background-image: url('../assets/sprite.png');
+    background-repeat: no-repeat;
+    
+    filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.2));
 }
 
-/* Bizim Karakteri Bariz Yapmak İçin Efekt (Taçlı ve hafif büyük) */
+/* Oyuncu Karakteri (Bariz / Farklı olan erkek karakter) */
 .player {
-    font-size: 42px;
+    background-position: 0px 0px; /* Sprite sheet üzerindeki konumu */
     z-index: 5;
+    /* Ayırt edici olması için hafif bir dış ışıma veya efekt ekleyebiliriz */
+    filter: drop-shadow(0px 0px 4px #f1c40f) drop-shadow(2px 4px 0px rgba(0,0,0,0.2));
+}
+
+/* Bot Ahmet (İkinci Erkek) */
+.bot-ahmet {
+    background-position: -48px 0px; 
+}
+
+/* Bot Ayşe (Kız Karakter) */
+.bot-ayse {
+    background-position: -96px 0px; 
+}
+
+/* Bot Mehmet (Üçüncü Erkek) */
+.bot-mehmet {
+    background-position: -144px 0px; 
 }
 
 /* Zıplama Animasyonları */
@@ -140,13 +162,13 @@ button:active {
 .small-jump { animation: smallJumpAnim 0.25s ease; }
 
 @keyframes jumpAnim {
-    0%, 100% { bottom: 12px; transform: scaleY(1); }
-    50% { bottom: 45px; transform: scaleY(1.1); }
+    0%, 100% { bottom: 5px; transform: scaleY(1); }
+    50% { bottom: 35px; transform: scaleY(1.1); }
 }
 
 @keyframes smallJumpAnim {
-    0%, 100% { bottom: 12px; }
-    50% { bottom: 20px; transform: rotate(-10deg); }
+    0%, 100% { bottom: 5px; }
+    50% { bottom: 15px; transform: scaleY(0.95); }
 }
 
 .finish-line {
