@@ -5,68 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>8-Bit Sack Race</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <div class="arcade-cabinet">
-        <div class="arcade-header">
-            <div class="score-box">SCORE: <span id="score-val">0000</span></div>
-            <div class="title-banner">8-BIT SACK RACE</div>
-            <div class="timer-box" id="timer">0:00</div>
-        </div>
-
-        <div class="rhythm-section">
-            <div class="status-text" id="status-text">READY TO HOP</div>
-            <div class="timing-bar">
-                <div class="perfect-zone"></div>
-                <div class="indicator" id="indicator"></div>
-            </div>
-            <div id="feedback-text">HAZIRLAN!</div>
-        </div>
-
-        <div class="game-field">
-            <div class="bg-scenery"></div>
-
-            <div class="track-lanes">
-                <div class="lane" id="lane-p1">
-                    <div class="lane-info">CANER [P1]</div>
-                    <div class="player-arrow"></div> <div class="character player" id="player"></div>
-                </div>
-
-                <div class="lane">
-                    <div class="lane-info">ALİ</div>
-                    <div class="character bot-ali" id="bot1"></div>
-                </div>
-
-                <div class="lane">
-                    <div class="lane-info">AYŞE</div>
-                    <div class="character bot-ayse" id="bot2"></div>
-                </div>
-
-                <div class="lane">
-                    <div class="lane-info">CAN</div>
-                    <div class="character bot-can" id="bot3"></div>
-                </div>
-                
-                <div class="finish-line-gate">FINISH</div>
-            </div>
-        </div>
-
-        <div class="control-panel">
-            <button id="start-btn">RACE START</button>
-        </div>
-
-        <div id="result-modal" class="modal hidden">
-            <div class="modal-content">
-                <h2>RACE OVER</h2>
-                <div class="leaderboard">
-                    <p id="winner-text"></p>
-                </div>
-                <button id="restart-btn" class="arcade-btn">NEXT RACE</button>
-            </div>
-        </div>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="900" height="500"></canvas>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
