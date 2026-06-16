@@ -1,1 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çuval Yarışı Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <div class="game-container">
+        <h1>Çuval Yarışı</h1>
+        <p>Zıplamak için <strong>BOŞLUK (SPACE)</strong> tuşuna sürekli bas!</p>
+        
+        <button id="start-btn">Yarışı Başlat</button>
+
+        <div class="track-container">
+            <div class="lane" id="player-lane">
+                <div class="lane-label">Sen</div>
+                <div class="character player" id="player">🦘</div>
+                <div class="finish-line"></div>
+            </div>
+
+            <div class="lane">
+                <div class="lane-label">Bot Ahmet</div>
+                <div class="character bot" id="bot1">🤖</div>
+                <div class="finish-line"></div>
+            </div>
+
+            <div class="lane">
+                <div class="lane-label">Bot Ayşe</div>
+                <div class="character bot" id="bot2">🤖</div>
+                <div class="finish-line"></div>
+            </div>
+
+            <div class="lane">
+                <div class="lane-label">Bot Mehmet</div>
+                <div class="character bot" id="bot3">🤖</div>
+                <div class="finish-line"></div>
+            </div>
+        </div>
+
+        <div id="result-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2 id="winner-text"></h2>
+                <button id="restart-btn">Yeniden Başla</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
