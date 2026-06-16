@@ -1,39 +1,38 @@
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const spriteSheet = new Image();
-spriteSheet.src = '../assets/sprite.png'; // Yolun doğruluğundan eminsen kalsın
+const racers = [
+    document.getElementById("player"),
+    document.getElementById("cpu1"),
+    document.getElementById("cpu2"),
+    document.getElementById("cpu3")
+];
 
-let isLoaded = false;
-spriteSheet.onload = () => { isLoaded = true; };
+const positions = [0,0,0,0];
 
-// Sabitler
-const S = 64; // Sprite boyutu
+function update(){
+    racers.forEach((racer,index)=>{
 
-// Basitleştirilmiş Sprite Map
-const MAP = {
-    sky: {x: 0, y: 0}, grass: {x: 1, y: 1}, fence: {x: 2, y: 1},
-    caner: {x: 0, y: 3}, ayse: {x: 2, y: 3}, ali: {x: 0, y: 4}, can: {x: 2, y: 4}
-};
+        let speed;
 
-function draw() {
-    // 1. Görsel yüklenmeden çizme
-    if (!isLoaded) {
-        requestAnimationFrame(draw);
-        return;
-    }
+        if(index === 0){
+            speed = 2;
+        }else{
+            speed = Math.random() * 2;
+        }
 
-    // 2. Arka planı temizle
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+        positions[index] += speed;
 
-    // 3. Gökyüzü ve Yer (Basit Örnek)
-    ctx.drawImage(spriteSheet, MAP.sky.x * S, MAP.sky.y * S, S, S, 0, 0, 900, 500);
-    
-    // 4. Karakterleri Çiz (Test için ilk karakteri çiziyoruz)
-    // drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
-    ctx.drawImage(spriteSheet, MAP.caner.x * S, MAP.caner.y * S, S, S, 100, 200, 64, 64);
+        racer.style.left =
+            `${100 + positions[index]}px`;
+    });
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(update);
 }
 
-// Oyunu Başlat
-draw();
+update();
+
+window.addEventListener("keydown",e=>{
+
+    if(e.code === "Space"){
+        positions[0] += 25;
+    }
+
+});
