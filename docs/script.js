@@ -1,24 +1,24 @@
-// DOM Elementleri
 const startBtn = document.getElementById('start-btn');
 const restartBtn = document.getElementById('restart-btn');
 const resultModal = document.getElementById('result-modal');
 const winnerText = document.getElementById('winner-text');
+const indicator = document.getElementById('indicator');
+const feedbackText = document.getElementById('feedback-text');
 
 const player = document.getElementById('player');
 const bot1 = document.getElementById('bot1');
-const bot2 = document.getElementById('bot2');
+const bot2 = document.getElementById('bot2'); // Ayşe
 const bot3 = document.getElementById('bot3');
 
-// Oyun Durumu Değişkenleri
 let isGameRunning = false;
-let playerPosition = 70;
-let bot1Position = 70;
-let bot2Position = 70;
-let bot3Position = 70;
+let playerPosition = 80;
+const startLine = 80;
 
-const startLine = 70;
-const finishLinePosition = window.innerWidth * 0.9 - 130; // Dinamik bitiş çizgisi hesabı
-let botIntervals = [];
+// İbre (Indicator) Değişkenleri
+let indicatorPos = 0;
+let indicatorDirection = 1;
+let indicatorSpeed = 3; // İbrenin hızı (Zorluğu artırmak için yükseltilebilir)
+let animationFrameId;
 
 // Yarışı Başlatma
 startBtn.addEventListener('click', startGame);
@@ -29,90 +29,140 @@ function startGame() {
     isGameRunning = true;
     startBtn.disabled = true;
     startBtn.style.opacity = "0.5";
+    feedbackText.innerText = "HAYDİ!";
 
-    // Botları harekete geçir
-    startBot(bot1, (pos) => bot1Position = pos, 180, 240); // Hız aralıkları (ms)
-    startBot(bot2, (pos) => bot2Position = pos, 200, 260);
-    startBot(bot3, (pos) => bot3Position = pos, 160, 280);
+    // İbreyi hareket ettirmeye başla
+    moveIndicator();
 
-    // Oyuncu kontrollerini aktif et
-    window.addEventListener('keydown', handlePlayerJump);
+    // Botları Başlat (Farklı karakter yapıları ve hızları var)
+    startBot(bot1, 190, 230); // Klasik Ahmet
+    startBot(bot2, 170, 220); // Hızlı Ayşe 🏃‍♀️
+    startBot(bot3, 220, 280); // Yavaş ama istikrarlı Mehmet
+
+    window.addEventListener('keydown', handlePlayerInput);
 }
 
-// Oyuncu Zıplama Mekaniği (Space Tuşu)
-function handlePlayerJump(e) {
+// Zamanlama İbresinin Mekaniği (Loop)
+function moveIndicator() {
+    if (!isGameRunning) return;
+
+    indicatorPos += indicatorSpeed * indicatorDirection;
+
+    if (indicatorPos >= 100) {
+        indicatorPos = 100;
+        indicatorDirection = -1;
+    } else if (indicatorPos <= 0) {
+        indicatorPos = 0;
+        indicatorDirection = 1;
+    }
+
+    indicator.style.left = indicatorPos + '%';
+    animationFrameId = requestAnimationFrame(moveIndicator);
+}
+
+// Oyuncu Tuş Kontrolü
+function handlePlayerInput(e) {
     if (e.code === 'Space' && isGameRunning) {
-        e.preventDefault(); // Sayfanın aşağı kaymasını engeller
-        
-        // Zıplama animasyonu ekle
-        if (!player.classList.contains('jump')) {
-            player.classList.add('jump');
-            setTimeout(() => player.classList.remove('jump'), 300);
+        e.preventDefault();
+
+        // Zamanlama kontrolü (%40 ile %60 arası yeşil bölge)
+        if (indicatorPos >= 40 && indicatorPos <= 60) {
+            // MÜKEMMEL ZAMANLAMA
+            playerPosition += 35; // Büyük ilerleme
+            triggerJump(player, 'jump');
+            showFeedback('MÜKEMMEL! 🔥', 'perfect-flash');
+        } else {
+            // ISKA / KÖTÜ ZAMANLAMA
+            playerPosition += 8; // Çok az ilerleme
+            triggerJump(player, 'small-jump');
+            showFeedback('KAÇIRDIN! 😰', 'miss-flash');
         }
 
-        // İlerleme miktarı (Her zıplamada 25 piksel)
-        playerPosition += 25;
         player.style.left = playerPosition + 'px';
-
-        checkWinner('Sen', playerPosition);
+        checkWinner('Sen (Oyuncu)', playerPosition);
     }
 }
 
-// Bot Yapay Zekası (Rastgele zaman aralıklarıyla zıplarlar)
-function startBot(botElement, updatePosFn, minSpeed, maxSpeed) {
+// Zıplama Sınıflarını Yönetme
+function triggerJump(element, className) {
+    element.classList.remove('jump', 'small-jump');
+    void element.offsetWidth; // DOM'u tetiklemek için trick (re-flow)
+    element.classList.add(className);
+}
+
+// Ekranda Mükemmel/Kaçırdın Yazısı Gösterme
+function showFeedback(text, cssClass) {
+    feedbackText.innerText = text;
+    feedbackText.className = cssClass;
+}
+
+// Botların Yapay Zekası
+function startBot(botElement, minDelay, maxDelay) {
     function botMove() {
         if (!isGameRunning) return;
 
-        // Botun zıplama animasyonu
-        botElement.classList.add('jump');
-        setTimeout(() => botElement.classList.remove('jump'), 300);
+        // Botlar da kendi içlerinde şans eseri iyi veya kötü zıplama yaparlar
+        let botPos = parseInt(botElement.style.left) || startLine;
+        let skillChance = Math.random();
 
-        // Bot ilerleme miktarı (Rastgele 15-25 arası)
-        let currentPos = parseInt(botElement.style.left) || startLine;
-        currentPos += Math.floor(Math.random() * 10) + 15;
-        botElement.style.left = currentPos + 'px';
-        updatePosFn(currentPos);
+        if (skillChance > 0.3) {
+            // İyi zıplama
+            botPos += 22;
+            triggerJump(botElement, 'jump');
+        } else {
+            // Botun sendelemesi
+            botPos += 10;
+            triggerJump(botElement, 'small-jump');
+        }
 
+        botElement.style.left = botPos + 'px';
+        
         const botName = botElement.previousElementSibling.innerText;
-        checkWinner(botName, currentPos);
+        checkWinner(botName, botPos);
 
-        // Bir sonraki zıplama zamanını rastgele belirle (Yapay zeka hissiyatı için)
-        let randomDelay = Math.random() * (maxSpeed - minSpeed) + minSpeed;
+        let randomDelay = Math.random() * (maxDelay - minDelay) + minDelay;
         if (isGameRunning) {
             setTimeout(botMove, randomDelay);
         }
     }
-
-    // İlk zıplamayı başlat
-    setTimeout(botMove, Math.random() * 500);
+    setTimeout(botMove, Math.random() * 600);
 }
 
-// Kazananı Kontrol Etme
+// Kazanan Kontrolü
 function checkWinner(name, position) {
     const trackWidth = document.querySelector('.lane').offsetWidth;
-    const goal = trackWidth - 100; // Bitiş çizgisine varış noktası
+    const goal = trackWidth - 110;
 
     if (position >= goal && isGameRunning) {
         isGameRunning = false;
-        winnerText.innerText = `🏁 Yarışı Kazanan: ${name}!`;
+        cancelAnimationFrame(animationFrameId);
+        winnerText.innerText = `🏁 ${name} Yarışı Kazandı!`;
         resultModal.classList.remove('hidden');
-        window.removeEventListener('keydown', handlePlayerJump);
     }
 }
 
-// Oyunu Sıfırlama
+// Reseti Düzenleme
 function resetGame() {
     playerPosition = startLine;
-    bot1Position = startLine;
-    bot2Position = startLine;
-    bot3Position = startLine;
-
     player.style.left = startLine + 'px';
     bot1.style.left = startLine + 'px';
     bot2.style.left = startLine + 'px';
     bot3.style.left = startLine + 'px';
 
+    player.classList.remove('jump', 'small-jump');
+    bot1.classList.remove('jump', 'small-jump');
+    bot2.classList.remove('jump', 'small-jump');
+    bot3.classList.remove('jump', 'small-jump');
+
+    indicatorPos = 0;
+    indicatorDirection = 1;
+    indicator.style.left = '0%';
+    
+    feedbackText.innerText = "HAZIRLAN!";
+    feedbackText.className = "";
+    
     resultModal.classList.add('hidden');
     startBtn.disabled = false;
     startBtn.style.opacity = "1";
+    window.removeEventListener('keydown', handlePlayerInput);
 }
