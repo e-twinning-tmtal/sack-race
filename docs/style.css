@@ -1,120 +1,83 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    user-select: none;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
 
-body {
-    background-color: #1a1a1a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: 'Press Start 2P', monospace;
-    overflow: hidden;
+body{
+    background:#6ec6ff;
+    overflow:hidden;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
-#game-container {
-    position: relative;
-    box-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-    border: 6px solid #4a4a4a;
-    background: #5c94fc;
+#game{
+    width:100vw;
+    height:100vh;
+    position:relative;
 }
 
-/* Piksel sanatının tarayıcı tarafından bulanıklaştırılmasını önleyen mucizevi ayar */
-canvas {
-    display: block;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
+#track{
+    position:absolute;
+    bottom:80px;
+    left:50%;
+    transform:translateX(-50%);
+    width:1000px;
+    height:400px;
+}
+
+.lane{
+    height:100px;
+    border-bottom:3px solid rgba(255,255,255,.5);
+}
+
+#finish-line{
+    position:absolute;
+    right:50px;
+    top:0;
+    width:8px;
+    height:100%;
+    background:white;
+}
+
+.racer{
+    position:absolute;
+
+    width:96px;
+    height:96px;
+
+    background-image:url("../assets/sprite.png");
+    background-repeat:no-repeat;
+
     image-rendering: pixelated;
-    image-rendering: crisp-edges;
+    transform:scale(2);
+    transform-origin:top left;
 }
 
-/* Üst HUD Alanı */
-#hud-overlay {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    display: flex;
-    gap: 20px;
-    z-index: 10;
+/* Sprite pozisyonları */
+#player{
+    left:100px;
+    top:220px;
+
+    background-position:-40px -700px;
 }
 
-.hud-box {
-    background-color: #000;
-    color: #fff;
-    padding: 10px 15px;
-    font-size: 14px;
-    border: 2px solid #fff;
+.cpu1{
+    left:100px;
+    top:120px;
+
+    background-position:-250px -880px;
 }
 
-.timer {
-    color: #ff0000;
+.cpu2{
+    left:100px;
+    top:320px;
+
+    background-position:-430px -700px;
 }
 
-/* Sağ Üst Canlı Sıralama (Leaderboard) */
-#leaderboard {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #fff;
-    padding: 12px;
-    color: #fff;
-    width: 240px;
-    z-index: 10;
-}
+.cpu3{
+    left:100px;
+    top:420px;
 
-#leaderboard h3 {
-    font-size: 10px;
-    text-align: center;
-    margin-bottom: 8px;
-    color: #ffeb3b;
-    border-bottom: 2px dashed #fff;
-    padding-bottom: 4px;
-}
-
-#leaderboard ol {
-    list-style: none;
-    font-size: 9px;
-    line-height: 1.8;
-}
-
-/* Oyun Sonu / Başlangıç Ekranı Karartması */
-#screen-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    z-index: 20;
-}
-
-#screen-title {
-    font-size: 28px;
-    color: #ffeb3b;
-    margin-bottom: 20px;
-    text-align: center;
-    text-shadow: 3px 3px #000;
-}
-
-#screen-sub {
-    font-size: 12px;
-    animation: blink 1s infinite;
-}
-
-.hidden {
-    display: none !important;
-}
-
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    background-position:-610px -880px;
 }
