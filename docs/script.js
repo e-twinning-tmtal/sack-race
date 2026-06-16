@@ -17,7 +17,7 @@ const startLine = 80;
 // İbre (Indicator) Değişkenleri
 let indicatorPos = 0;
 let indicatorDirection = 1;
-let indicatorSpeed = 3; // İbrenin hızı (Zorluğu artırmak için yükseltilebilir)
+let indicatorSpeed = 3; 
 let animationFrameId;
 
 // Yarışı Başlatma
@@ -31,12 +31,11 @@ function startGame() {
     startBtn.style.opacity = "0.5";
     feedbackText.innerText = "HAYDİ!";
 
-    // İbreyi hareket ettirmeye başla
     moveIndicator();
 
-    // Botları Başlat (Farklı karakter yapıları ve hızları var)
-    startBot(bot1, 190, 230); // Klasik Ahmet
-    startBot(bot2, 170, 220); // Hızlı Ayşe 🏃‍♀️
+    // Botları Başlat
+    startBot(bot1, 190, 230); // Ahmet
+    startBot(bot2, 170, 220); // Hızlı Ayşe 
     startBot(bot3, 220, 280); // Yavaş ama istikrarlı Mehmet
 
     window.addEventListener('keydown', handlePlayerInput);
@@ -67,12 +66,10 @@ function handlePlayerInput(e) {
 
         // Zamanlama kontrolü (%40 ile %60 arası yeşil bölge)
         if (indicatorPos >= 40 && indicatorPos <= 60) {
-            // MÜKEMMEL ZAMANLAMA
             playerPosition += 35; // Büyük ilerleme
             triggerJump(player, 'jump');
             showFeedback('MÜKEMMEL! 🔥', 'perfect-flash');
         } else {
-            // ISKA / KÖTÜ ZAMANLAMA
             playerPosition += 8; // Çok az ilerleme
             triggerJump(player, 'small-jump');
             showFeedback('KAÇIRDIN! 😰', 'miss-flash');
@@ -86,7 +83,7 @@ function handlePlayerInput(e) {
 // Zıplama Sınıflarını Yönetme
 function triggerJump(element, className) {
     element.classList.remove('jump', 'small-jump');
-    void element.offsetWidth; // DOM'u tetiklemek için trick (re-flow)
+    void element.offsetWidth; // DOM re-flow trick
     element.classList.add(className);
 }
 
@@ -98,19 +95,18 @@ function showFeedback(text, cssClass) {
 
 // Botların Yapay Zekası
 function startBot(botElement, minDelay, maxDelay) {
+    botElement.style.left = startLine + 'px'; // İlk hareket öncesi sabitleme
+
     function botMove() {
         if (!isGameRunning) return;
 
-        // Botlar da kendi içlerinde şans eseri iyi veya kötü zıplama yaparlar
         let botPos = parseInt(botElement.style.left) || startLine;
         let skillChance = Math.random();
 
         if (skillChance > 0.3) {
-            // İyi zıplama
             botPos += 22;
             triggerJump(botElement, 'jump');
         } else {
-            // Botun sendelemesi
             botPos += 10;
             triggerJump(botElement, 'small-jump');
         }
@@ -131,7 +127,8 @@ function startBot(botElement, minDelay, maxDelay) {
 // Kazanan Kontrolü
 function checkWinner(name, position) {
     const trackWidth = document.querySelector('.lane').offsetWidth;
-    const goal = trackWidth - 110;
+    // Sprite genişliği ve bitiş çizgisi payına göre güncellendi
+    const goal = trackWidth - 130; 
 
     if (position >= goal && isGameRunning) {
         isGameRunning = false;
@@ -141,7 +138,7 @@ function checkWinner(name, position) {
     }
 }
 
-// Reseti Düzenleme
+// Oyunu Sıfırlama
 function resetGame() {
     playerPosition = startLine;
     player.style.left = startLine + 'px';
