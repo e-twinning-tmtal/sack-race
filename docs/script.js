@@ -9,12 +9,13 @@ const screenOverlay = document.getElementById('screen-overlay');
 const screenTitle = document.getElementById('screen-title');
 
 // Sprite Ölçüleri (Oluşturduğumuz 4x6'lık grid şeması)
-const SPRITE_SIZE = 32; 
+const SPRITE_SIZE = 64; 
 
 const spriteSheet = new Image();
 spriteSheet.src = '../assets/sprite.png'; // sack-race/assets/sprite.png
 
 // Sprite Sheet Koordinat Eşlemesi (Hatası düzeltilen yeni görsele tam uyumlu)
+// Yeni 64x64 Grid Sistemine Göre Koordinatlar (0-3 arası indexler)
 const SPRITE_MAP = {
     sky:         { x: 0, y: 0 },
     cloud:       { x: 1, y: 0 },
@@ -28,7 +29,6 @@ const SPRITE_MAP = {
     crowd_2:     { x: 1, y: 2 },
     flag:        { x: 3, y: 2 },
     
-    // Karakter Gridleri
     caner_idle:  { x: 0, y: 3 },
     caner_jump:  { x: 1, y: 3 },
     ayse_idle:   { x: 2, y: 3 },
