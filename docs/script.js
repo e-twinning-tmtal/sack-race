@@ -4,23 +4,30 @@ const resultModal = document.getElementById('result-modal');
 const winnerText = document.getElementById('winner-text');
 const indicator = document.getElementById('indicator');
 const feedbackText = document.getElementById('feedback-text');
+const timerElement = document.getElementById('timer');
+const scoreVal = document.getElementById('score-val');
 
 const player = document.getElementById('player');
+const playerArrow = document.querySelector('.player-arrow');
 const bot1 = document.getElementById('bot1');
-const bot2 = document.getElementById('bot2'); // Ayşe
+const bot2 = document.getElementById('bot2');
 const bot3 = document.getElementById('bot3');
 
 let isGameRunning = false;
-let playerPosition = 80;
-const startLine = 80;
+let playerPosition = 30;
+const startLine = 30;
+let score = 0;
 
-// İbre (Indicator) Değişkenleri
+// Zamanlayıcı Değişkenleri
+let startTime;
+let timerInterval;
+
+// İbre Ayarları
 let indicatorPos = 0;
 let indicatorDirection = 1;
-let indicatorSpeed = 3; 
+let indicatorSpeed = 3.5; // Hızı görseldeki tempoya yaklaştırmak için biraz artırdık
 let animationFrameId;
 
-// Yarışı Başlatma
 startBtn.addEventListener('click', startGame);
 restartBtn.addEventListener('click', resetGame);
 
@@ -29,134 +36,138 @@ function startGame() {
     isGameRunning = true;
     startBtn.disabled = true;
     startBtn.style.opacity = "0.5";
-    feedbackText.innerText = "HAYDİ!";
+    feedbackText.innerText = "GO GO GO!";
+    feedbackText.style.color = "#2ecc71";
+
+    // Süreyi Başlat
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
 
     moveIndicator();
 
-    // Botları Başlat
-    startBot(bot1, 190, 230); // Ahmet
-    startBot(bot2, 170, 220); // Hızlı Ayşe 
-    startBot(bot3, 220, 280); // Yavaş ama istikrarlı Mehmet
+    // Botların Hız Dengesi (Görseldeki gibi adil ama dişli rakipler)
+    startBot(bot1, 180, 240); // Ali
+    startBot(bot2, 160, 220); // Ayşe (Bir tık seridir)
+    startBot(bot3, 200, 250); // Can
 
     window.addEventListener('keydown', handlePlayerInput);
 }
 
-// Zamanlama İbresinin Mekaniği (Loop)
+function updateTimer() {
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const minutes = Math.floor(elapsed / 60);
+    const seconds = elapsed % 60;
+    timerElement.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
 function moveIndicator() {
     if (!isGameRunning) return;
 
     indicatorPos += indicatorSpeed * indicatorDirection;
 
-    if (indicatorPos >= 100) {
-        indicatorPos = 100;
-        indicatorDirection = -1;
-    } else if (indicatorPos <= 0) {
-        indicatorPos = 0;
-        indicatorDirection = 1;
-    }
+    if (indicatorPos >= 100) { indicatorPos = 100; indicatorDirection = -1; }
+    else if (indicatorPos <= 0) { indicatorPos = 0; indicatorDirection = 1; }
 
     indicator.style.left = indicatorPos + '%';
     animationFrameId = requestAnimationFrame(moveIndicator);
 }
 
-// Oyuncu Tuş Kontrolü
 function handlePlayerInput(e) {
     if (e.code === 'Space' && isGameRunning) {
         e.preventDefault();
 
-        // Zamanlama kontrolü (%40 ile %60 arası yeşil bölge)
-        if (indicatorPos >= 40 && indicatorPos <= 60) {
-            playerPosition += 35; // Büyük ilerleme
+        // Mükemmel alan kontrolü (%42 - %58)
+        if (indicatorPos >= 42 && indicatorPos <= 58) {
+            playerPosition += 40; // İyi sıçrayış
+            score += 150;
             triggerJump(player, 'jump');
-            showFeedback('MÜKEMMEL! 🔥', 'perfect-flash');
+            feedbackText.innerText = "PERFECT! 🔥";
+            feedbackText.style.color = "#2ecc71";
         } else {
-            playerPosition += 8; // Çok az ilerleme
+            playerPosition += 12; // Kötü zamanlama sendelemesi
+            score = Math.max(0, score - 50);
             triggerJump(player, 'small-jump');
-            showFeedback('KAÇIRDIN! 😰', 'miss-flash');
+            feedbackText.innerText = "MISS! 😰";
+            feedbackText.style.color = "#e74c3c";
         }
 
+        // Skoru ekrana 4 haneli retro formatta bas
+        scoreVal.innerText = String(score).padStart(4, '0');
+        
+        // Karakteri ve üzerindeki Sarı Oku hareket ettir
         player.style.left = playerPosition + 'px';
-        checkWinner('Sen (Oyuncu)', playerPosition);
+        playerArrow.style.left = (playerPosition + 22) + 'px'; // Oku ortaladık
+
+        checkWinner('CANER (SEN)', playerPosition);
     }
 }
 
-// Zıplama Sınıflarını Yönetme
 function triggerJump(element, className) {
     element.classList.remove('jump', 'small-jump');
-    void element.offsetWidth; // DOM re-flow trick
+    void element.offsetWidth;
     element.classList.add(className);
 }
 
-// Ekranda Mükemmel/Kaçırdın Yazısı Gösterme
-function showFeedback(text, cssClass) {
-    feedbackText.innerText = text;
-    feedbackText.className = cssClass;
-}
-
-// Botların Yapay Zekası
 function startBot(botElement, minDelay, maxDelay) {
-    botElement.style.left = startLine + 'px'; // İlk hareket öncesi sabitleme
-
     function botMove() {
         if (!isGameRunning) return;
 
         let botPos = parseInt(botElement.style.left) || startLine;
-        let skillChance = Math.random();
+        let chance = Math.random();
 
-        if (skillChance > 0.3) {
-            botPos += 22;
+        if (chance > 0.35) {
+            botPos += 25;
             triggerJump(botElement, 'jump');
         } else {
-            botPos += 10;
+            botPos += 12;
             triggerJump(botElement, 'small-jump');
         }
 
         botElement.style.left = botPos + 'px';
         
+        // Bot ismini temiz alalım
         const botName = botElement.previousElementSibling.innerText;
         checkWinner(botName, botPos);
 
-        let randomDelay = Math.random() * (maxDelay - minDelay) + minDelay;
         if (isGameRunning) {
-            setTimeout(botMove, randomDelay);
+            setTimeout(botMove, Math.random() * (maxDelay - minDelay) + minDelay);
         }
     }
-    setTimeout(botMove, Math.random() * 600);
+    setTimeout(botMove, Math.random() * 500);
 }
 
-// Kazanan Kontrolü
 function checkWinner(name, position) {
-    const trackWidth = document.querySelector('.lane').offsetWidth;
-    // Sprite genişliği ve bitiş çizgisi payına göre güncellendi
-    const goal = trackWidth - 130; 
+    const trackWidth = document.querySelector('.track-lanes').offsetWidth;
+    const goal = trackWidth - 140; // Bitiş çizgisi hizası
 
     if (position >= goal && isGameRunning) {
         isGameRunning = false;
+        clearInterval(timerInterval);
         cancelAnimationFrame(animationFrameId);
-        winnerText.innerText = `🏁 ${name} Yarışı Kazandı!`;
+        
+        winnerText.innerText = `${name} WINS THE RACE!`;
         resultModal.classList.remove('hidden');
     }
 }
 
-// Oyunu Sıfırlama
 function resetGame() {
     playerPosition = startLine;
+    score = 0;
+    scoreVal.innerText = "0000";
+    timerElement.innerText = "0:00";
+
     player.style.left = startLine + 'px';
+    playerArrow.style.left = (startLine + 22) + 'px';
     bot1.style.left = startLine + 'px';
     bot2.style.left = startLine + 'px';
     bot3.style.left = startLine + 'px';
-
-    player.classList.remove('jump', 'small-jump');
-    bot1.classList.remove('jump', 'small-jump');
-    bot2.classList.remove('jump', 'small-jump');
-    bot3.classList.remove('jump', 'small-jump');
 
     indicatorPos = 0;
     indicatorDirection = 1;
     indicator.style.left = '0%';
     
     feedbackText.innerText = "HAZIRLAN!";
-    feedbackText.className = "";
+    feedbackText.style.color = "#fff";
     
     resultModal.classList.add('hidden');
     startBtn.disabled = false;
