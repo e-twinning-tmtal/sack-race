@@ -11,7 +11,27 @@
 </head>
 <body>
     <div id="game-container">
+        <div id="hud-overlay">
+            <div class="hud-box">SCORE: <span id="score-val">0000</span></div>
+            <div class="hud-box timer">TIME: <span id="timer-val">0:09</span></div>
+        </div>
+        
         <canvas id="gameCanvas" width="900" height="500"></canvas>
+        
+        <div id="leaderboard">
+            <h3>LEADERBOARD</h3>
+            <ol id="leaderboard-list">
+                <li>CANER [P1] (1st)</li>
+                <li>AYŞE (2nd)</li>
+                <li>ALİ (3rd)</li>
+                <li>CAN (4th)</li>
+            </ol>
+        </div>
+
+        <div id="screen-overlay" class="hidden">
+            <h1 id="screen-title">RACE FINISHED</h1>
+            <p id="screen-sub">Press SPACE to Restart</p>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
